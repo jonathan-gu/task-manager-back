@@ -27,4 +27,25 @@ app.get("", async (req: Request, res: Response) => {
     return res.status(200).json({ tasks })
 })
 
+app.put("/completed/:id", async (req: Request, res: Response) => {
+    let task = await db.task.findUnique({
+        where: {
+            id: Number(req.params.id)
+        }
+    })
+    console.log(task)
+    if (task !== undefined) {
+        task = await db.task.update({
+            where: {
+                id: Number(req.params.id)
+            },
+            data: {
+                "status": true
+            }
+        })
+        return res.status(200).json({ task })
+    }
+    return res.status(404).json({ message: "Task not found " })
+})
+
 export default app
