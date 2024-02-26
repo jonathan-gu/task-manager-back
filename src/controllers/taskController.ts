@@ -17,7 +17,11 @@ export const createTask = async (req: Request, res: Response) => {
 }
 
 export const getTasks = async (req: Request, res: Response) => {
-    const tasks = await db.task.findMany({})
+    const tasks = await db.task.findMany({
+        where: {
+            status: false
+        }
+    })
     return res.status(200).json({ tasks })
 }
 
@@ -38,5 +42,26 @@ export const completeTask = async (req: Request, res: Response) => {
         })
         return res.status(200).json({ task })
     }
-    return res.status(404).json({ message: "Task not found " })
+    return res.status(404).json({ message: "Task not found" })
+}
+
+export const updateTask = async (req: Request, res: Response) => {
+    let task = await db.task.findUnique({
+        where: {
+            id: Number(req.params.id)
+        }
+    })
+    if (task !== undefined) {
+        task = await db.task.update({
+            where: {
+                id: Number(req.params.id)
+            },
+            data: {
+                name: req.body.name,
+                dueDate: req.body.dueDate
+            }
+        })
+        return res.status(200).json({ task })
+    }
+    return res.status(404).json({ message: "Task not found" })
 }
