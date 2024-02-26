@@ -22,4 +22,9 @@ app.post("", [
     }
 })
 
+app.get("", async (req: Request, res: Response) => {
+    const tasks = await db.task.findMany({})
+    return res.status(200).json({ tasks })
+})
+
 export default app
