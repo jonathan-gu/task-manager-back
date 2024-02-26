@@ -65,3 +65,20 @@ export const updateTask = async (req: Request, res: Response) => {
     }
     return res.status(404).json({ message: "Task not found" })
 }
+
+export const deleteTask = async (req: Request, res: Response) => {
+    let task = await db.task.findUnique({
+        where: {
+            id: Number(req.params.id)
+        }
+    })
+    if (task !== undefined) {
+        task = await db.task.delete({
+            where: {
+                id: Number(req.params.id)
+            }
+        })
+        return res.status(200).json({ task })
+    }
+    return res.status(404).json({ message: "Task not found" })
+}
