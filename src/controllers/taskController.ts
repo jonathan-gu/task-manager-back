@@ -1,13 +1,7 @@
-import { Router, Request, Response } from "express";
-import { body } from "express-validator";
-import db from "../db";
+import { Request, Response } from "express"
+import db from "../config/db"
 
-const app = Router()
-
-app.post("", [
-    body("name").exists().isString().notEmpty(),
-    body("dueDate").exists()
-], async (req: Request, res: Response) => {
+export const createTask = async (req: Request, res: Response) => {
     try {
         const task = await db.task.create({
             data: {
@@ -20,20 +14,19 @@ app.post("", [
     } catch (exception) {
         return res.status(400).json({ error: exception?.toString() })
     }
-})
+}
 
-app.get("", async (req: Request, res: Response) => {
+export const getTasks = async (req: Request, res: Response) => {
     const tasks = await db.task.findMany({})
     return res.status(200).json({ tasks })
-})
+}
 
-app.put("/completed/:id", async (req: Request, res: Response) => {
+export const completeTask = async (req: Request, res: Response) => {
     let task = await db.task.findUnique({
         where: {
             id: Number(req.params.id)
         }
     })
-    console.log(task)
     if (task !== undefined) {
         task = await db.task.update({
             where: {
@@ -46,6 +39,4 @@ app.put("/completed/:id", async (req: Request, res: Response) => {
         return res.status(200).json({ task })
     }
     return res.status(404).json({ message: "Task not found " })
-})
-
-export default app
+}
