@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { body } from "express-validator";
 import { completeTask, createTask, deleteTask, getTasks, updateTask } from "../controllers/taskController";
 
